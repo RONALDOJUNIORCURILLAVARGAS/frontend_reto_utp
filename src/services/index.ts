@@ -22,7 +22,7 @@ export const loginWithUserPassword = async (
 ) => {
   try {
     dispatch(checkingCredentials());
-    const response = await fetch("http://localhost:4001/api/usuarios/login", {
+    const response = await fetch(import.meta.env.VITE_API_URL+"/api/usuarios/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user, password }),
@@ -57,7 +57,7 @@ export const getTeacherInformation = async (
 ) => {
   try {
     const response = await fetch(
-      `http://localhost:4001/api/noteChanges/techaerinformation/${user_id}`,
+      import.meta.env.VITE_API_URL+`/api/noteChanges/techaerinformation/${user_id}`,
       {
         method: "GET",
         headers: {
@@ -92,7 +92,7 @@ export const getSearchFilterTeacher = async (
 ) => {
   try {
     const response = await fetch(
-      `http://localhost:4001/api/noteChanges/filters?course=${course}&type_evaluation=${type_evaluation}`,
+      import.meta.env.VITE_API_URL+`/api/noteChanges/filters?course=${course}&type_evaluation=${type_evaluation}`,
       {
         method: "GET",
         headers: {
@@ -128,7 +128,7 @@ export const sendChangeNotes = async ({
     formData.append("nota_nueva", nota_nueva);
     console.log("formdata", formData);
     const response = await fetch(
-      `http://localhost:4001/api/noteChanges/sendChangeNotes`,
+      import.meta.env.VITE_API_URL+`/api/noteChanges/sendChangeNotes`,
       {
         method: "POST",
         headers: {
