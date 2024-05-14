@@ -3,13 +3,14 @@ import { useForm } from "../../hooks/useForm";
 import { AuthLayout } from "../layout/AuthLayout";
 import { loginWithUserPassword } from "../../services";
 /* import { useForm } from "../../hooks"; */
+const sendForm=  {
+    user: "",
+    password: "",
+  }
 
-const formDate = {
-  user: "",
-  password: "",
-};
 export const LoginPage = () => {
-  const { onInputChange, user, password, formState } = useForm(formDate);
+ 
+  const { onInputChange, user, password } = useForm(sendForm);
 
   const dispatch = useDispatch();
 
