@@ -2,10 +2,12 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useDropdown } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { getSearchFilterTeacher } from "../../services";
 import { clearStudents } from "../../store/teacher";
-
-export const DropdownFilter = () => {
+import { FilterRow } from "../../types";
+interface Props{
+  onSendFilter:(data:FilterRow)=>void
+}
+export const DropdownFilter = ({onSendFilter}: Props) => {
   const { courses, typesEvaluation } = useSelector(
     (state: RootState) => state.teacher
   );
@@ -19,21 +21,18 @@ export const DropdownFilter = () => {
     dispatch(clearStudents());
   };
   const searchFilter = () => {
-    console.log("buscando cursoDropdown.value", cursoDropdown.value);
-    console.log("buscando evaluacionDropdown.value", evaluacionDropdown.value);
-    getSearchFilterTeacher(
-      {
-        course: cursoDropdown.value,
-        type_evaluation: evaluacionDropdown.value,
-        user_token,
-      },
-      dispatch
-    );
+    const filter={
+      course:cursoDropdown.value, 
+      evaluation:evaluacionDropdown.value,
+       user_token
+    }
+    onSendFilter(filter);
+   
   };
   return (
     <div className="w-full pt-[15px] text-black md:grid md:grid-cols-4 md:gap-[12px]">
       <FormControl fullWidth sx={{ mt: "16px" }}>
-        <InputLabel id="select-label-course">Seleccionar curso</InputLabel>
+        <InputLabel id="select-label-course" className="bg-white">Seleccionar curso</InputLabel>
         <Select
           labelId="select-label-course"
           value={cursoDropdown.value}
@@ -49,7 +48,7 @@ export const DropdownFilter = () => {
       </FormControl>
 
       <FormControl fullWidth sx={{ mt: "16px" }}>
-        <InputLabel id="select-label-evaluation">
+        <InputLabel id="select-label-evaluation" className="bg-white">
           Seleccionar evaluación
         </InputLabel>
         <Select

@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { logout } from "../../store/auth";
 import Cookies from 'js-cookie';
+import { clearStudents } from "../../store/teacher";
 export const Header = () => {
   const { user_rol, user_firstname, user_lastname } = useSelector(
     (state: RootState) => state.auth
@@ -15,6 +16,7 @@ export const Header = () => {
   const dispatch = useDispatch();
   const SignOff = () => {
     dispatch(logout({ errorMessage: null }));
+    dispatch(clearStudents())
     Cookies.remove('session');
   };
 

@@ -1,8 +1,4 @@
-import {
-  faCheck,
-  faPaperclip,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPaperclip, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { StudentRow } from "../../types";
@@ -13,13 +9,17 @@ import { RootState } from "../../store";
 interface ModalRegisterRequestProps {
   isVisible: boolean;
   onClose: () => void;
+  onToast: (state: boolean) => void;
+  onValidation: (state: boolean) => void;
   data: StudentRow;
 }
-type StateSend = "" | "loading" | "success" | "error";
+type StateSend = "" | "loading";
 
 export const ModalRegisterRequest = ({
   isVisible,
   onClose,
+  onToast,
+  onValidation,
   data,
 }: ModalRegisterRequestProps) => {
   const { user_id, user_token } = useSelector((state: RootState) => state.auth);
@@ -48,7 +48,10 @@ export const ModalRegisterRequest = ({
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (validateInput()) return;
+    if (validateInput()) {
+      onValidation(true);
+      return;
+    }
 
     setStateSend("loading");
     const response = await sendChangeNotes({
@@ -58,8 +61,13 @@ export const ModalRegisterRequest = ({
       nota_nueva: newNote,
       user_token: user_token,
     });
-    if (response) setStateSend("success");
-    else setStateSend("error");
+    if (response) {
+      onToast(true);
+      CloseModal();
+    } else {
+      onToast(false);
+      setStateSend("");
+    }
   };
   const clearStates = () => {
     setSelectedFile(null);
@@ -160,11 +168,7 @@ export const ModalRegisterRequest = ({
               </div>
             </div>
           </div>
-          {(errorNewNote || errorFile) && (
-            <div className="text-red-utp text-sm w-full text-right py-4">
-              Completar los campos marcados en rojo*
-            </div>
-          )}
+          
           <div className="text-gray-400 text-sm w-full text-right py-4">
             Seleccionar archivo de tipo pdf,png,jpg*
           </div>
@@ -178,18 +182,6 @@ export const ModalRegisterRequest = ({
           >
             <span>Registrar solicitud</span>
           </button>
-          {stateSend === "error" && (
-            <div className=" rounded-[5px] w-full px-3 py-1 bg-red-300 flex gap-3 items-center text-red-900 mt-3">
-              <FontAwesomeIcon icon={faXmark} /> <span>Error de envio </span>
-            </div>
-          )}
-
-          {stateSend === "success" && (
-            <div className="rounded-[5px] w-full px-3 py-1  flex gap-3 items-center bg-green-300 text-green-900 mt-3">
-              <FontAwesomeIcon icon={faCheck} />{" "}
-              <span>La solicitud ha sido creada con éxito</span>
-            </div>
-          )}
         </form>
       </div>
     );

@@ -5,7 +5,7 @@ interface Props {
 
 export const AuthLayout = ({ children, title = "" }: Props) => {
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto md:px-[24px]">
      
 
       <section className="h-screen">

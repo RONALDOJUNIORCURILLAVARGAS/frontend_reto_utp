@@ -5,12 +5,12 @@ import { useCheckAuth } from "../hooks";
 import { ModulesRoutes } from "../modules/routes/ModulesRoutes";
 
 export const AppRouter = () => {
-  console.log("creando");
+  
   const { status } = useCheckAuth();
   if (status === "checking") {
     return <CheckingAuth />;
   }
-  console.log("status", status);
+  
   return (
     <Routes>
      

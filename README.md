@@ -23,7 +23,7 @@ $ npm install
 
 ```
 $ docker build -t app-utp-frontend .
-$ docker run -p 5173:5173 -d app-utp-frontend
+$ docker run -d -p 3000:3000 --name utp-container-frontend app-utp-frontend
 ```
 
 

@@ -1,5 +1,5 @@
 
-FROM node:18
+FROM node:18.20.2
 
 WORKDIR /app
 
@@ -12,6 +12,9 @@ RUN npm install
 
 # Copiar el resto de los archivos de la aplicación
 COPY . .
+
+# Definir la variable de entorno
+ENV VITE_API_URL=http://localhost:4050
 
 # Compilar la aplicación
 RUN npm run build

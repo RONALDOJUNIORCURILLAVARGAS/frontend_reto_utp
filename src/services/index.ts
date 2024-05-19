@@ -19,16 +19,21 @@ interface sendChangeNote {
 export const loginWithUserPassword = async (
   { user, password }: login,
   dispatch: Dispatch
-) => {
+): Promise<boolean> => {
   try {
     dispatch(checkingCredentials());
-    const response = await fetch(import.meta.env.VITE_API_URL+"/api/usuarios/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user, password }),
-    });
+    const response = await fetch(
+      import.meta.env.VITE_API_URL + "/api/usuarios/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user, password }),
+      }
+    );
+
     if (response.ok) {
       const data = await response.json();
+
       if (data.success) {
         const payload = data.data;
         Cookies.set("session", JSON.stringify(payload), { expires: 60 });
@@ -40,14 +45,17 @@ export const loginWithUserPassword = async (
             dispatch
           );
         }
+        return true;
       } else {
         dispatch(logout({ errorMessage: data.message }));
+        return false;
       }
-    } else {
-      dispatch(logout({ errorMessage: "Error de credenciales" }));
     }
+    dispatch(logout({ errorMessage: "Error al iniciar sesion" }));
+    return false;
   } catch (error: any) {
-    return dispatch(logout({ errorMessage: error.message }));
+    dispatch(logout({ errorMessage: error.message }));
+    return false;
   }
 };
 
@@ -57,7 +65,8 @@ export const getTeacherInformation = async (
 ) => {
   try {
     const response = await fetch(
-      import.meta.env.VITE_API_URL+`/api/noteChanges/techaerinformation/${user_id}`,
+      import.meta.env.VITE_API_URL +
+        `/api/noteChanges/techaerinformation/${user_id}`,
       {
         method: "GET",
         headers: {
@@ -92,7 +101,8 @@ export const getSearchFilterTeacher = async (
 ) => {
   try {
     const response = await fetch(
-      import.meta.env.VITE_API_URL+`/api/noteChanges/filters?course=${course}&type_evaluation=${type_evaluation}`,
+      import.meta.env.VITE_API_URL +
+        `/api/noteChanges/filters?course=${course}&type_evaluation=${type_evaluation}`,
       {
         method: "GET",
         headers: {
@@ -126,9 +136,9 @@ export const sendChangeNotes = async ({
     formData.append("file", file);
     formData.append("nota_id", nota_id);
     formData.append("nota_nueva", nota_nueva);
-    console.log("formdata", formData);
+
     const response = await fetch(
-      import.meta.env.VITE_API_URL+`/api/noteChanges/sendChangeNotes`,
+      import.meta.env.VITE_API_URL + `/api/noteChanges/sendChangeNotes`,
       {
         method: "POST",
         headers: {
@@ -138,13 +148,7 @@ export const sendChangeNotes = async ({
       }
     );
     if (response.ok) {
-      const data = await response.json();
-      console.log("response data:", data);
-      if (data.success) {
-        //const payload = data.data;
-        /* console.log("payload courses", payload.courses);
-        dispatch(setStudents(payload)); */
-      }
+      await response.json();
       return true;
     } else {
       return false;
